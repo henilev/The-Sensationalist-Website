@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TypeTag {
+  ISSUE
+  VOLUME
+  ESSAY
+  SHORT_STORY
+  LONG_STORY
+  RESEARCH
+  JOURNALISM
+  HOW_TO
+  PROJECT
+  DIARY
+  SERIES
+}
+
+enum ContentTag {
+  SATIRE
+  REVIEW
+  POETRY
+  FICTION
+  PROJECT
+  HOW_TO
+  VISUAL_ART
+  MUSIC
+  VIDEO
+  POLITICAL
+  ESSAY
+  SOCIAL
+  NEWS
+  CULTURE
+  COMPLAINT
+  LETTER
+  OPINION
+  COMMENTARY
+  THOUGHT
+  PHOTOGRAPHY
+}
+
+model Publication {
+  id            String      @id @default(cuid())
+  datePublished DateTime    @default(now())
+  dateEdited    DateTime    @updatedAt
+  pdfUrl        String
+  coverImageUrl String?
+  typeTag       TypeTag
+  contentTag    ContentTag?
+  author        String?
+  title         String
+  description   String
+  pageLength    Int
+  pinned        Boolean     @default(false)
+  seriesTag     String?
+  views         Int         @default(0)
+
+  @@index([typeTag])
+  @@index([contentTag])
+  @@index([pinned])
+  @@index([datePublished])
+}
+
+model BlogPost {
+  id            String      @id @default(cuid())
+  datePublished DateTime    @default(now())
+  dateEdited    DateTime    @updatedAt
+  richTextBody  String
+  coverImageUrl String?
+  contentTag    ContentTag?
+  author        String
+  title         String
+  description   String?
+  pinned        Boolean     @default(false)
+  seriesTag     String?
+  views         Int         @default(0)
+
+  @@index([contentTag])
+  @@index([pinned])
+  @@index([datePublished])
+}
+
+model Update {
+  id            String   @id @default(cuid())
+  datePublished DateTime @default(now())
+  dateEdited    DateTime @updatedAt
+  richTextBody  String
+  coverImageUrl String?
+  author        String
+  title         String
+  views         Int      @default(0)
+
+  @@index([datePublished])
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Subscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
