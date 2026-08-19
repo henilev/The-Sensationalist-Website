@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatTag } from "@/lib/tags";
 
@@ -18,7 +19,13 @@ export default async function BlogPage() {
           <p className="py-8 text-sm italic text-ink/40">No blog posts yet.</p>
         )}
         {posts.map((post) => (
-          <article key={post.id} className="py-8">
+          <article key={post.id} className="flex flex-col gap-4 py-8 sm:flex-row">
+            {post.coverImageUrl && (
+              <div className="relative h-40 w-full shrink-0 overflow-hidden rounded sm:w-56">
+                <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover" />
+              </div>
+            )}
+            <div className="flex-1">
             <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-wide text-ink/50">
               <span>{post.datePublished.toLocaleDateString()}</span>
               {post.contentTag && (
@@ -35,6 +42,7 @@ export default async function BlogPage() {
               <p className="mt-2 text-ink/70">{post.description}</p>
             )}
             <p className="mt-3 text-sm text-ink/50">By {post.author}</p>
+            </div>
           </article>
         ))}
       </div>

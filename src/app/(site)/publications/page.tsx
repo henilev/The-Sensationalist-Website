@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatTag } from "@/lib/tags";
 
@@ -18,7 +19,13 @@ export default async function PublicationsPage() {
           <p className="text-sm italic text-ink/40">No publications yet.</p>
         )}
         {publications.map((pub) => (
-          <article key={pub.id} className="rounded border border-ink/10 bg-white p-5">
+          <article key={pub.id} className="overflow-hidden rounded border border-ink/10 bg-white">
+            {pub.coverImageUrl && (
+              <div className="relative aspect-[16/9]">
+                <Image src={pub.coverImageUrl} alt={pub.title} fill className="object-cover" />
+              </div>
+            )}
+            <div className="p-5">
             <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-ink/50">
               <span className="rounded-full bg-navy/10 px-2 py-0.5 text-navy">
                 {formatTag(pub.typeTag)}
@@ -37,6 +44,15 @@ export default async function PublicationsPage() {
             <div className="mt-4 flex items-center justify-between text-xs text-ink/50">
               <span>{pub.author ?? "The Sensationalist"}</span>
               <span>{pub.pageLength} pages</span>
+            </div>
+            <a
+              href={pub.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block text-sm font-semibold text-burgundy underline"
+            >
+              Read PDF &rarr;
+            </a>
             </div>
           </article>
         ))}

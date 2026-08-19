@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatTag } from "@/lib/tags";
 
@@ -31,12 +32,15 @@ export default async function Home() {
         <div className="mt-4 grid gap-6 sm:grid-cols-3">
           {newestReleases.length === 0 && <EmptyState label="Nothing published yet." />}
           {newestReleases.map((item) => (
-            <article key={item.id} className="rounded border border-ink/10 bg-white p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-burgundy">
-                {"pdfUrl" in item ? "Publication" : "Blog"}
-              </p>
-              <h3 className="mt-2 font-display text-lg font-bold leading-snug">{item.title}</h3>
-              <p className="mt-2 text-sm text-ink/70">{item.description}</p>
+            <article key={item.id} className="overflow-hidden rounded border border-ink/10 bg-white">
+              <CoverImage src={item.coverImageUrl} alt={item.title} />
+              <div className="p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-burgundy">
+                  {"pdfUrl" in item ? "Publication" : "Blog"}
+                </p>
+                <h3 className="mt-2 font-display text-lg font-bold leading-snug">{item.title}</h3>
+                <p className="mt-2 text-sm text-ink/70">{item.description}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -47,12 +51,15 @@ export default async function Home() {
           <SectionLabel>Pinned</SectionLabel>
           <div className="mt-4 grid gap-6 sm:grid-cols-3">
             {pinnedPosts.map((item) => (
-              <article key={item.id} className="rounded border border-gold/40 bg-white p-5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gold">
-                  Pinned &middot; {"pdfUrl" in item ? "Publication" : "Blog"}
-                </p>
-                <h3 className="mt-2 font-display text-lg font-bold leading-snug">{item.title}</h3>
-                <p className="mt-2 text-sm text-ink/70">{item.description}</p>
+              <article key={item.id} className="overflow-hidden rounded border border-gold/40 bg-white">
+                <CoverImage src={item.coverImageUrl} alt={item.title} />
+                <div className="p-5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gold">
+                    Pinned &middot; {"pdfUrl" in item ? "Publication" : "Blog"}
+                  </p>
+                  <h3 className="mt-2 font-display text-lg font-bold leading-snug">{item.title}</h3>
+                  <p className="mt-2 text-sm text-ink/70">{item.description}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -66,13 +73,16 @@ export default async function Home() {
           {mostViewedPublications.map((pub) => (
             <article
               key={pub.id}
-              className="w-64 shrink-0 rounded border border-ink/10 bg-white p-5"
+              className="w-64 shrink-0 overflow-hidden rounded border border-ink/10 bg-white"
             >
-              <p className="text-xs font-semibold uppercase tracking-wide text-navy">
-                {formatTag(pub.typeTag)}
-              </p>
-              <h3 className="mt-2 font-display text-base font-bold leading-snug">{pub.title}</h3>
-              <p className="mt-2 text-xs text-ink/50">{pub.views} views</p>
+              <CoverImage src={pub.coverImageUrl} alt={pub.title} />
+              <div className="p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-navy">
+                  {formatTag(pub.typeTag)}
+                </p>
+                <h3 className="mt-2 font-display text-base font-bold leading-snug">{pub.title}</h3>
+                <p className="mt-2 text-xs text-ink/50">{pub.views} views</p>
+              </div>
             </article>
           ))}
         </div>
@@ -85,7 +95,14 @@ export default async function Home() {
         ) : (
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {galleryImages.map((image) => (
-              <div key={image.id} className="aspect-square rounded bg-ink/5" />
+              <div key={image.id} className="relative aspect-square overflow-hidden rounded">
+                <Image
+                  src={image.imageUrl}
+                  alt={image.caption ?? ""}
+                  fill
+                  className="object-cover"
+                />
+              </div>
             ))}
           </div>
         )}
@@ -131,4 +148,13 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function EmptyState({ label }: { label: string }) {
   return <p className="text-sm italic text-ink/40">{label}</p>;
+}
+
+function CoverImage({ src, alt }: { src: string | null; alt: string }) {
+  if (!src) return null;
+  return (
+    <div className="relative aspect-[16/9]">
+      <Image src={src} alt={alt} fill className="object-cover" />
+    </div>
+  );
 }
