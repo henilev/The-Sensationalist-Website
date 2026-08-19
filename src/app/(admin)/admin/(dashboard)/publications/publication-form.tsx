@@ -1,5 +1,6 @@
 import type { Publication } from "@prisma/client";
 import { TYPE_TAGS, CONTENT_TAGS, formatTag } from "@/lib/tags";
+import { Field } from "@/components/admin/field";
 
 export function PublicationForm({
   action,
@@ -127,14 +128,5 @@ export function PublicationForm({
         {publication ? "Save Changes" : "Publish"}
       </button>
     </form>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <div className="mt-1">{children}</div>
-    </label>
   );
 }

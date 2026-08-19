@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatTag } from "@/lib/tags";
+import { CoverImage } from "@/components/cover-image";
 
 export default async function Home() {
   const [recentPublications, recentBlogPosts, mostViewedPublications, updates, galleryImages] =
@@ -148,13 +149,4 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function EmptyState({ label }: { label: string }) {
   return <p className="text-sm italic text-ink/40">{label}</p>;
-}
-
-function CoverImage({ src, alt }: { src: string | null; alt: string }) {
-  if (!src) return null;
-  return (
-    <div className="relative aspect-[16/9]">
-      <Image src={src} alt={alt} fill className="object-cover" />
-    </div>
-  );
 }

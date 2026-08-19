@@ -1,5 +1,6 @@
 import type { Update } from "@prisma/client";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { Field } from "@/components/admin/field";
 
 export function UpdateForm({
   action,
@@ -43,14 +44,5 @@ export function UpdateForm({
         {update ? "Save Changes" : "Publish"}
       </button>
     </form>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <div className="mt-1">{children}</div>
-    </label>
   );
 }

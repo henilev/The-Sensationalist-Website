@@ -1,6 +1,7 @@
 import type { BlogPost } from "@prisma/client";
 import { CONTENT_TAGS, formatTag } from "@/lib/tags";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { Field } from "@/components/admin/field";
 
 export function BlogForm({
   action,
@@ -82,14 +83,5 @@ export function BlogForm({
         {post ? "Save Changes" : "Publish"}
       </button>
     </form>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <div className="mt-1">{children}</div>
-    </label>
   );
 }

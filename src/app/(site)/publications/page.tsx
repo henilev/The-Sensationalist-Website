@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatTag } from "@/lib/tags";
+import { CoverImage } from "@/components/cover-image";
 
 export const metadata = { title: "Publications | The Sensationalist" };
 
@@ -20,11 +20,7 @@ export default async function PublicationsPage() {
         )}
         {publications.map((pub) => (
           <article key={pub.id} className="overflow-hidden rounded border border-ink/10 bg-white">
-            {pub.coverImageUrl && (
-              <div className="relative aspect-[16/9]">
-                <Image src={pub.coverImageUrl} alt={pub.title} fill className="object-cover" />
-              </div>
-            )}
+            <CoverImage src={pub.coverImageUrl} alt={pub.title} />
             <div className="p-5">
             <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-ink/50">
               <span className="rounded-full bg-navy/10 px-2 py-0.5 text-navy">
