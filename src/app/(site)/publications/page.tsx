@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { formatTag, isTypeTag, isContentTag } from "@/lib/tags";
 import { CoverImage } from "@/components/cover-image";
+import { ContentTagPills } from "@/components/content-tag-pills";
 import { FilterBar } from "@/components/filter-bar";
 import { parseParam, parseSort } from "@/lib/content-query";
 
@@ -21,7 +22,7 @@ export default async function PublicationsPage({
 
   const where: Prisma.PublicationWhereInput = {
     ...(typeTag && isTypeTag(typeTag) ? { typeTag } : {}),
-    ...(contentTag && isContentTag(contentTag) ? { contentTag } : {}),
+    ...(contentTag && isContentTag(contentTag) ? { contentTags: { has: contentTag } } : {}),
     ...(search && {
       OR: [
         { title: { contains: search, mode: "insensitive" } },
@@ -70,11 +71,7 @@ export default async function PublicationsPage({
                 <span className="rounded-full bg-navy/10 px-2 py-0.5 text-navy">
                   {formatTag(pub.typeTag)}
                 </span>
-                {pub.contentTag && (
-                  <span className="rounded-full bg-burgundy/10 px-2 py-0.5 text-burgundy">
-                    {formatTag(pub.contentTag)}
-                  </span>
-                )}
+                <ContentTagPills tags={pub.contentTags} />
                 {pub.pinned && (
                   <span className="rounded-full bg-gold/10 px-2 py-0.5 text-gold">Pinned</span>
                 )}

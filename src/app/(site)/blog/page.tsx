@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { formatTag, isContentTag } from "@/lib/tags";
+import { isContentTag } from "@/lib/tags";
 import { CoverImage } from "@/components/cover-image";
+import { ContentTagPills } from "@/components/content-tag-pills";
 import { FilterBar } from "@/components/filter-bar";
 import { parseParam, parseSort } from "@/lib/content-query";
 import { wordCount } from "@/lib/word-count";
@@ -20,7 +21,7 @@ export default async function BlogPage({
   const sort = parseSort(params.sort);
 
   const where: Prisma.BlogPostWhereInput = {
-    ...(contentTag && isContentTag(contentTag) ? { contentTag } : {}),
+    ...(contentTag && isContentTag(contentTag) ? { contentTags: { has: contentTag } } : {}),
     ...(search && {
       OR: [
         { title: { contains: search, mode: "insensitive" } },
@@ -73,11 +74,7 @@ export default async function BlogPage({
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-wide text-ink/50">
                 <span>{post.datePublished.toLocaleDateString()}</span>
-                {post.contentTag && (
-                  <span className="rounded-full bg-burgundy/10 px-2 py-0.5 text-burgundy">
-                    {formatTag(post.contentTag)}
-                  </span>
-                )}
+                <ContentTagPills tags={post.contentTags} />
                 {post.pinned && (
                   <span className="rounded-full bg-gold/10 px-2 py-0.5 text-gold">Pinned</span>
                 )}

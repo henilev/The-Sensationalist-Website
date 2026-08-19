@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { formatTag } from "@/lib/tags";
 import { CoverImage } from "@/components/cover-image";
+import { ContentTagPills } from "@/components/content-tag-pills";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -23,11 +23,7 @@ export default async function BlogPostDetailPage({
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-12">
       <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-ink/50">
-        {post.contentTag && (
-          <span className="rounded-full bg-burgundy/10 px-2 py-0.5 text-burgundy">
-            {formatTag(post.contentTag)}
-          </span>
-        )}
+        <ContentTagPills tags={post.contentTags} />
         {post.pinned && (
           <span className="rounded-full bg-gold/10 px-2 py-0.5 text-gold">Pinned</span>
         )}

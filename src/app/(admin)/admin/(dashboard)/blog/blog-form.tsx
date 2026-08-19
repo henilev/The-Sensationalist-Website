@@ -1,7 +1,7 @@
 import type { BlogPost } from "@prisma/client";
-import { CONTENT_TAGS, formatTag } from "@/lib/tags";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Field } from "@/components/admin/field";
+import { ContentTagPicker } from "@/components/admin/content-tag-picker";
 
 export function BlogForm({
   action,
@@ -34,30 +34,18 @@ export function BlogForm({
         <RichTextEditor name="richTextBody" defaultValue={post?.richTextBody} />
       </Field>
 
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Author">
-          <input
-            name="author"
-            required
-            defaultValue={post?.author}
-            className="w-full rounded border border-ink/20 px-3 py-2 text-sm"
-          />
-        </Field>
-        <Field label="Content Tag (optional)">
-          <select
-            name="contentTag"
-            defaultValue={post?.contentTag ?? ""}
-            className="w-full rounded border border-ink/20 px-3 py-2 text-sm"
-          >
-            <option value="">None</option>
-            {CONTENT_TAGS.map((tag) => (
-              <option key={tag} value={tag}>
-                {formatTag(tag)}
-              </option>
-            ))}
-          </select>
-        </Field>
-      </div>
+      <Field label="Author">
+        <input
+          name="author"
+          required
+          defaultValue={post?.author}
+          className="w-full max-w-xs rounded border border-ink/20 px-3 py-2 text-sm"
+        />
+      </Field>
+
+      <Field label="Content Tags (optional, choose any that apply)">
+        <ContentTagPicker defaultValues={post?.contentTags} />
+      </Field>
 
       <Field label="Series/Article Name Tag (optional)">
         <input

@@ -1,6 +1,7 @@
 import type { Publication } from "@prisma/client";
-import { TYPE_TAGS, CONTENT_TAGS, formatTag } from "@/lib/tags";
+import { TYPE_TAGS, formatTag } from "@/lib/tags";
 import { Field } from "@/components/admin/field";
+import { ContentTagPicker } from "@/components/admin/content-tag-picker";
 
 export function PublicationForm({
   action,
@@ -30,40 +31,27 @@ export function PublicationForm({
         />
       </Field>
 
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Type Tag">
-          <select
-            name="typeTag"
-            required
-            defaultValue={publication?.typeTag ?? ""}
-            className="w-full rounded border border-ink/20 px-3 py-2 text-sm"
-          >
-            <option value="" disabled>
-              Select...
+      <Field label="Type Tag">
+        <select
+          name="typeTag"
+          required
+          defaultValue={publication?.typeTag ?? ""}
+          className="w-full max-w-xs rounded border border-ink/20 px-3 py-2 text-sm"
+        >
+          <option value="" disabled>
+            Select...
+          </option>
+          {TYPE_TAGS.map((tag) => (
+            <option key={tag} value={tag}>
+              {formatTag(tag)}
             </option>
-            {TYPE_TAGS.map((tag) => (
-              <option key={tag} value={tag}>
-                {formatTag(tag)}
-              </option>
-            ))}
-          </select>
-        </Field>
+          ))}
+        </select>
+      </Field>
 
-        <Field label="Content Tag (optional)">
-          <select
-            name="contentTag"
-            defaultValue={publication?.contentTag ?? ""}
-            className="w-full rounded border border-ink/20 px-3 py-2 text-sm"
-          >
-            <option value="">None</option>
-            {CONTENT_TAGS.map((tag) => (
-              <option key={tag} value={tag}>
-                {formatTag(tag)}
-              </option>
-            ))}
-          </select>
-        </Field>
-      </div>
+      <Field label="Content Tags (optional, choose any that apply)">
+        <ContentTagPicker defaultValues={publication?.contentTags} />
+      </Field>
 
       <div className="grid grid-cols-2 gap-4">
         <Field label="Author (optional)">

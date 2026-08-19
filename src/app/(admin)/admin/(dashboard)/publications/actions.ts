@@ -9,16 +9,15 @@ import { isTypeTag, isContentTag } from "@/lib/tags";
 
 function readFields(formData: FormData) {
   const typeTag = String(formData.get("typeTag"));
-  const contentTagRaw = String(formData.get("contentTag") ?? "");
   if (!isTypeTag(typeTag)) throw new Error("Invalid type tag");
-  if (contentTagRaw && !isContentTag(contentTagRaw)) throw new Error("Invalid content tag");
+  const contentTags = formData.getAll("contentTags").map(String).filter(isContentTag) as ContentTag[];
 
   return {
     title: String(formData.get("title") ?? "").trim(),
     description: String(formData.get("description") ?? "").trim(),
     pageLength: Number(formData.get("pageLength")),
     typeTag: typeTag as TypeTag,
-    contentTag: (contentTagRaw || null) as ContentTag | null,
+    contentTags,
     author: String(formData.get("author") ?? "").trim() || null,
     seriesTag: String(formData.get("seriesTag") ?? "").trim() || null,
     pinned: formData.get("pinned") === "on",
