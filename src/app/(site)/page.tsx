@@ -33,7 +33,11 @@ export default async function Home() {
         <div className="mt-4 grid gap-6 sm:grid-cols-3">
           {newestReleases.length === 0 && <EmptyState label="Nothing published yet." />}
           {newestReleases.map((item) => (
-            <article key={item.id} className="overflow-hidden rounded border border-ink/10 bg-white">
+            <Link
+              key={item.id}
+              href={hrefFor(item)}
+              className="block overflow-hidden rounded border border-ink/10 bg-white"
+            >
               <CoverImage src={item.coverImageUrl} alt={item.title} />
               <div className="p-5">
                 <p className="text-xs font-semibold uppercase tracking-wide text-burgundy">
@@ -42,7 +46,7 @@ export default async function Home() {
                 <h3 className="mt-2 font-display text-lg font-bold leading-snug">{item.title}</h3>
                 <p className="mt-2 text-sm text-ink/70">{item.description}</p>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
@@ -52,7 +56,11 @@ export default async function Home() {
           <SectionLabel>Pinned</SectionLabel>
           <div className="mt-4 grid gap-6 sm:grid-cols-3">
             {pinnedPosts.map((item) => (
-              <article key={item.id} className="overflow-hidden rounded border border-gold/40 bg-white">
+              <Link
+                key={item.id}
+                href={hrefFor(item)}
+                className="block overflow-hidden rounded border border-gold/40 bg-white"
+              >
                 <CoverImage src={item.coverImageUrl} alt={item.title} />
                 <div className="p-5">
                   <p className="text-xs font-semibold uppercase tracking-wide text-gold">
@@ -61,7 +69,7 @@ export default async function Home() {
                   <h3 className="mt-2 font-display text-lg font-bold leading-snug">{item.title}</h3>
                   <p className="mt-2 text-sm text-ink/70">{item.description}</p>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </section>
@@ -72,9 +80,10 @@ export default async function Home() {
         <div className="mt-4 flex gap-6 overflow-x-auto pb-2">
           {mostViewedPublications.length === 0 && <EmptyState label="No publications yet." />}
           {mostViewedPublications.map((pub) => (
-            <article
+            <Link
               key={pub.id}
-              className="w-64 shrink-0 overflow-hidden rounded border border-ink/10 bg-white"
+              href={`/publications/${pub.id}`}
+              className="block w-64 shrink-0 overflow-hidden rounded border border-ink/10 bg-white"
             >
               <CoverImage src={pub.coverImageUrl} alt={pub.title} />
               <div className="p-5">
@@ -84,7 +93,7 @@ export default async function Home() {
                 <h3 className="mt-2 font-display text-base font-bold leading-snug">{pub.title}</h3>
                 <p className="mt-2 text-xs text-ink/50">{pub.views} views</p>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
@@ -149,4 +158,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 function EmptyState({ label }: { label: string }) {
   return <p className="text-sm italic text-ink/40">{label}</p>;
+}
+
+function hrefFor(item: { id: string } & Record<string, unknown>): string {
+  return "pdfUrl" in item ? `/publications/${item.id}` : `/blog/${item.id}`;
 }
