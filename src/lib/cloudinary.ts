@@ -14,6 +14,23 @@ export async function uploadPdf(fileBuffer: Buffer, folder: string) {
   return uploadToCloudinary(fileBuffer, folder, "raw");
 }
 
+export async function deleteImage(publicId: string | null | undefined) {
+  return deleteAsset(publicId, "image");
+}
+
+export async function deletePdf(publicId: string | null | undefined) {
+  return deleteAsset(publicId, "raw");
+}
+
+async function deleteAsset(publicId: string | null | undefined, resourceType: "image" | "raw") {
+  if (!publicId) return;
+  try {
+    await cloudinary.uploader.destroy(publicId, { resource_type: resourceType });
+  } catch (error) {
+    console.error(`Failed to delete Cloudinary asset ${publicId}:`, error);
+  }
+}
+
 function uploadToCloudinary(
   fileBuffer: Buffer,
   folder: string,

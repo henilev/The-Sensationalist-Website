@@ -48,7 +48,9 @@ model Publication {
   datePublished DateTime    @default(now())
   dateEdited    DateTime    @updatedAt
   pdfUrl        String
+  pdfPublicId   String?
   coverImageUrl String?
+  coverImagePublicId String?
   typeTag       TypeTag
   contentTag    ContentTag?
   author        String?
@@ -71,6 +73,7 @@ model BlogPost {
   dateEdited    DateTime    @updatedAt
   richTextBody  String
   coverImageUrl String?
+  coverImagePublicId String?
   contentTag    ContentTag?
   author        String
   title         String
@@ -90,6 +93,7 @@ model Update {
   dateEdited    DateTime @updatedAt
   richTextBody  String
   coverImageUrl String?
+  coverImagePublicId String?
   author        String
   title         String
   views         Int      @default(0)
@@ -98,11 +102,12 @@ model Update {
 }
 
 model GalleryImage {
-  id        String   @id @default(cuid())
-  imageUrl  String
-  caption   String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  imageUrl     String
+  imagePublicId String?
+  caption      String?
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
 }
 
 model Subscriber {

@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { uploadPdf, uploadImage } from "@/lib/cloudinary";
+import { uploadPdf, uploadImage, deletePdf, deleteImage } from "@/lib/cloudinary";
 import type { TypeTag, ContentTag } from "@prisma/client";
 import { isTypeTag, isContentTag } from "@/lib/tags";
 
@@ -36,16 +36,26 @@ export async function createPublication(formData: FormData) {
 
   const pdfFile = formData.get("pdf") as File | null;
   if (!pdfFile || pdfFile.size === 0) throw new Error("A PDF file is required.");
-  const { url: pdfUrl } = await uploadPdf(Buffer.from(await pdfFile.arrayBuffer()), "publications/pdfs");
+  const pdf = await uploadPdf(Buffer.from(await pdfFile.arrayBuffer()), "publications/pdfs");
 
   let coverImageUrl: string | undefined;
+  let coverImagePublicId: string | undefined;
   const coverFile = formData.get("coverImage") as File | null;
   if (coverFile && coverFile.size > 0) {
     const result = await uploadImage(Buffer.from(await coverFile.arrayBuffer()), "publications/covers");
     coverImageUrl = result.url;
+    coverImagePublicId = result.publicId;
   }
 
-  await prisma.publication.create({ data: { ...fields, pdfUrl, coverImageUrl } });
+  await prisma.publication.create({
+    data: {
+      ...fields,
+      pdfUrl: pdf.url,
+      pdfPublicId: pdf.publicId,
+      coverImageUrl,
+      coverImagePublicId,
+    },
+  });
 
   revalidatePublicationPaths();
   redirect("/admin/publications");
@@ -53,20 +63,35 @@ export async function createPublication(formData: FormData) {
 
 export async function updatePublication(id: string, formData: FormData) {
   const fields = readFields(formData);
+  const existing = await prisma.publication.findUniqueOrThrow({ where: { id } });
 
   const pdfFile = formData.get("pdf") as File | null;
-  const pdfUrl = pdfFile && pdfFile.size > 0
-    ? (await uploadPdf(Buffer.from(await pdfFile.arrayBuffer()), "publications/pdfs")).url
-    : undefined;
+  let pdfUrl: string | undefined;
+  let pdfPublicId: string | undefined;
+  if (pdfFile && pdfFile.size > 0) {
+    const pdf = await uploadPdf(Buffer.from(await pdfFile.arrayBuffer()), "publications/pdfs");
+    pdfUrl = pdf.url;
+    pdfPublicId = pdf.publicId;
+    await deletePdf(existing.pdfPublicId);
+  }
 
   const coverFile = formData.get("coverImage") as File | null;
-  const coverImageUrl = coverFile && coverFile.size > 0
-    ? (await uploadImage(Buffer.from(await coverFile.arrayBuffer()), "publications/covers")).url
-    : undefined;
+  let coverImageUrl: string | undefined;
+  let coverImagePublicId: string | undefined;
+  if (coverFile && coverFile.size > 0) {
+    const result = await uploadImage(Buffer.from(await coverFile.arrayBuffer()), "publications/covers");
+    coverImageUrl = result.url;
+    coverImagePublicId = result.publicId;
+    await deleteImage(existing.coverImagePublicId);
+  }
 
   await prisma.publication.update({
     where: { id },
-    data: { ...fields, ...(pdfUrl && { pdfUrl }), ...(coverImageUrl && { coverImageUrl }) },
+    data: {
+      ...fields,
+      ...(pdfUrl && { pdfUrl, pdfPublicId }),
+      ...(coverImageUrl && { coverImageUrl, coverImagePublicId }),
+    },
   });
 
   revalidatePublicationPaths();
@@ -74,6 +99,8 @@ export async function updatePublication(id: string, formData: FormData) {
 }
 
 export async function deletePublication(id: string) {
+  const existing = await prisma.publication.findUniqueOrThrow({ where: { id } });
   await prisma.publication.delete({ where: { id } });
+  await Promise.all([deletePdf(existing.pdfPublicId), deleteImage(existing.coverImagePublicId)]);
   revalidatePublicationPaths();
 }
