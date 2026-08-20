@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { deleteUpdate } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminUpdatesPage() {
   const updates = await prisma.update.findMany({ orderBy: { datePublished: "desc" } });
 

@@ -7,6 +7,8 @@ import { ContentTagPills } from "@/components/content-tag-pills";
 import { FilterBar } from "@/components/filter-bar";
 import { parseParam, parseSort } from "@/lib/content-query";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Publications | The Sensationalist" };
 
 export default async function PublicationsPage({

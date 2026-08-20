@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { BlogForm } from "../blog-form";
 import { updateBlogPost } from "../actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditBlogPostPage({
   params,
 }: {

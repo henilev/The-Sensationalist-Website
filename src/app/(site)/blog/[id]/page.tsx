@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { CoverImage } from "@/components/cover-image";
 import { ContentTagPills } from "@/components/content-tag-pills";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const post = await prisma.blogPost.findUnique({ where: { id }, select: { title: true } });

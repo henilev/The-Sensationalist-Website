@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { deleteBlogPost } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminBlogPage() {
   const posts = await prisma.blogPost.findMany({ orderBy: { datePublished: "desc" } });
 

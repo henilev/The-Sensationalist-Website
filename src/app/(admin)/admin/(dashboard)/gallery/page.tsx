@@ -2,6 +2,8 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { createGalleryImage, deleteGalleryImage } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminGalleryPage() {
   const images = await prisma.galleryImage.findMany({ orderBy: { order: "asc" } });
 

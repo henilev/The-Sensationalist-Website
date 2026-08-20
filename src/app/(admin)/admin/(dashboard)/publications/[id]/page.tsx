@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { PublicationForm } from "../publication-form";
 import { updatePublication } from "../actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditPublicationPage({
   params,
 }: {

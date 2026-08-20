@@ -4,6 +4,8 @@ import { formatTag } from "@/lib/tags";
 import { CoverImage } from "@/components/cover-image";
 import { ContentTagPills } from "@/components/content-tag-pills";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const publication = await prisma.publication.findUnique({ where: { id }, select: { title: true } });

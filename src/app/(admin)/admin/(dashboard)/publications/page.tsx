@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { formatTag } from "@/lib/tags";
 import { deletePublication } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPublicationsPage() {
   const publications = await prisma.publication.findMany({ orderBy: { datePublished: "desc" } });
 

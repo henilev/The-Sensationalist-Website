@@ -8,6 +8,8 @@ import { FilterBar } from "@/components/filter-bar";
 import { parseParam, parseSort } from "@/lib/content-query";
 import { wordCount } from "@/lib/word-count";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Blog | The Sensationalist" };
 
 export default async function BlogPage({

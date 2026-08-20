@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { formatTag } from "@/lib/tags";
 import { CoverImage } from "@/components/cover-image";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const [recentPublications, recentBlogPosts, mostViewedPublications, updates, galleryImages] =
     await Promise.all([
