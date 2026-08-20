@@ -11,7 +11,7 @@ export async function uploadImage(fileBuffer: Buffer, folder: string) {
 }
 
 export async function uploadPdf(fileBuffer: Buffer, folder: string) {
-  return uploadToCloudinary(fileBuffer, folder, "raw");
+  return uploadToCloudinary(fileBuffer, folder, "raw", "pdf");
 }
 
 export async function deleteImage(publicId: string | null | undefined) {
@@ -35,10 +35,11 @@ function uploadToCloudinary(
   fileBuffer: Buffer,
   folder: string,
   resourceType: "image" | "raw",
+  format?: string,
 ) {
   return new Promise<{ url: string; publicId: string }>((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: resourceType },
+      { folder, resource_type: resourceType, ...(format && { format }) },
       (error, result) => {
         if (error || !result) {
           reject(error ?? new Error("Cloudinary upload failed"));
